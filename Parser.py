@@ -31,6 +31,9 @@ while True:
     if type(dnsrecord(line)) == str:
         ad = dnsrecord(line).replace(';', '')
         ad = ad.replace('*', '')
+        if ad[0] == '.' or ad[0] == ' ':
+            ad = ad[:0] + '' + ad[1:]
+            
         if ad.find('	'):
             sd = sd + ad.partition('	')[0] + '.mai.ru' + '\r\n'
         else:
