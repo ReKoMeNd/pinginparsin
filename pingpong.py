@@ -1,7 +1,9 @@
 import platform
 import subprocess
 import argparse
+import socket
 
+#Ping function
 def myping(host):
     parameter = '-n' if platform.system().lower()=='windows' else '-c'
 
@@ -13,6 +15,7 @@ def myping(host):
     else:
         return False
 
+#Argparse interface
 parser = argparse.ArgumentParser()
 parser.add_argument('File',
                     metavar='file',
@@ -22,10 +25,12 @@ parser.add_argument('File',
 args = parser.parse_args()
 f = open(args.File, 'r', encoding="utf-8")
 
+
 sucpingfile = open('successfullypinged.txt', 'w')
 unsucpingfile = open('unsuccesfullypinged.txt', 'w')
 sucping = ''
 unsucping = ''
+
 
 while True:
     line = f.readline()
@@ -36,7 +41,12 @@ while True:
     if myping(line) == True:
         sucping = sucping + line + '\r\n'
     else:
-        unsucping = unsucping + line + '\r\n'
+        try:
+            ipaddres = socket.gethostbyname(line)
+        except Exception:
+            ipaddres = ''
+            pass
+        unsucping = unsucping + line + ' ' + ipaddres + '\r\n'
     
     if not line:
         sucpingfile.write(sucping)
